@@ -13,4 +13,9 @@ def conversion(unconverted_model_location):
         model_type = fp.model_type_detection(file_path)
         if model_type == 'keras':
             cv.keras_to_tflite(file_path)
-            print("Model has been convereted")
+            print("Keras model has been convereted to tflite")
+        if model_type == 'tensorflow':
+            cv.tensorflow_to_tflite(file_path)
+            print("Tensorflow Model has been convereted to tflite")
+        else:
+            print("Model type can not be recognized")

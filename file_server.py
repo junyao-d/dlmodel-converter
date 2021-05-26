@@ -14,6 +14,7 @@ print(pwd)
 UPLOAD_FOLDER = os.path.join(pwd,'uploaded_files')
 PROCESS_FOLDER = os.path.join(pwd,'unconverted_models')
 OUTPUT_FOLDER = os.path.join(pwd,'tflite_models')
+SAVEDMODEL_FOLDER = os.path.join(pwd,'saved_models')
 ALLOWED_EXTENSIONS = {'zip', 'tar'}
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
@@ -26,6 +27,7 @@ def index():
     fp.clean_folder(UPLOAD_FOLDER)
     fp.clean_folder(PROCESS_FOLDER)
     fp.clean_folder(OUTPUT_FOLDER)
+    fp.clean_folder(SAVEDMODEL_FOLDER)
     return render_template('index.html')
 
 def allowed_file(filename):
@@ -49,7 +51,7 @@ def upload_and_convert_file():
     fp.clean_folder(UPLOAD_FOLDER)
     fp.clean_folder(PROCESS_FOLDER)
     fp.clean_folder(OUTPUT_FOLDER)
-    
+    fp.clean_folder(SAVEDMODEL_FOLDER)
     if 'file' not in request.files:
         return "No files are uploaded"
     file = request.files['file']

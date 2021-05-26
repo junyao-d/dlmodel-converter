@@ -1,5 +1,6 @@
 import os
 from pathlib import Path
+import shutil
 
 
 
@@ -36,10 +37,13 @@ def clean_folder(path):
     if len(file_list) != 0:
         for file in file_list:
             file_path = os.path.join(path, file)
-            os.remove(file_path)
+            if os.path.isfile(file_path):
+                os.remove(file_path)
+            elif os.path.isdir(file_path):
+                shutil.rmtree(file_path)
         file_list = os.listdir(path)
         if len(file_list) == 0:
             print("All files in " + path + " has been remove")
     else:
-        print("This folder is empty, nothing to clean")
+        print("Folder" + path + " is empty, nothing to clean")
     
