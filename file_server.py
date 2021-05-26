@@ -1,8 +1,11 @@
 import os
-from string import Template
 from flask import Flask, request, send_file, render_template
 from werkzeug.utils import secure_filename
 import zipfile
+import main
+import file_processor as fp
+
+
 
 app = Flask(__name__)
 pwd = os.path.dirname(__file__)
@@ -16,23 +19,26 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 
 HOST = "0.0.0.0"
-PORT = 5000
+PORT = 80
 
 @app.route('/')
 def index():
+    fp.clean_folder(UPLOAD_FOLDER)
+    fp.clean_folder(PROCESS_FOLDER)
+    fp.clean_folder(OUTPUT_FOLDER)
     return render_template('index.html')
 
 def allowed_file(filename):
     """
-    Check file name
+    Check file type
     """
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 
 
-@app.route('/upload', methods=['GET', 'POST'])
-def upload_file():
+@app.route('/convert', methods=['GET', 'POST'])
+def upload_and_convert_file():
     """
     upload to uploaded_files directory
     requests example:
@@ -40,7 +46,10 @@ def upload_file():
         rsp = requests.post('http://localhost:5000/upload,files={'file':file_obj})
         print(rsp.text) --> file uploaded successfully
     """
-    os.system('python test.py')
+    fp.clean_folder(UPLOAD_FOLDER)
+    fp.clean_folder(PROCESS_FOLDER)
+    fp.clean_folder(OUTPUT_FOLDER)
+    
     if 'file' not in request.files:
         return "No files are uploaded"
     file = request.files['file']
@@ -48,18 +57,19 @@ def upload_file():
         return 'No selected file'
     if file and allowed_file(file.filename):
         filename = secure_filename(file.filename)
-        file_init_loc = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+        file_init_loc = os.path.join(UPLOAD_FOLDER, filename)
         file.save(file_init_loc)
         with zipfile.ZipFile(file_init_loc, 'r') as zip_ref:
             zip_ref.extractall(PROCESS_FOLDER)
-        os.system('python main.py')
+        #os.system('python main.py')
+        main.conversion(PROCESS_FOLDER)
 
         filename_base = os.path.splitext(file.filename)[0]
         output_filename = filename_base+'.tflite'
         file_path = os.path.join(OUTPUT_FOLDER,output_filename)
         # return f"http://{HOST}:{PORT}/download?fileId={output_filename}"#'file uploaded successfully'
         return send_file(file_path,as_attachment=True)
-    return "file uploaded fail, file type may be not accept"
+    return "file uploaded fail, only zip files are accepted"
 
 
 @app.route("/download")

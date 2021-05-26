@@ -30,8 +30,16 @@ def model_type_detection(file_path):
     print('This is a ' + model_type + ' model')
     return model_type
 
-# Test
-unconverted_model_location = './unconverted_models/'
-file_paths = get_unconverted_models(unconverted_model_location)
-for file_path in file_paths:
-    model_type_detection(file_path)
+
+def clean_folder(path):
+    file_list = os.listdir(path)
+    if len(file_list) != 0:
+        for file in file_list:
+            file_path = os.path.join(path, file)
+            os.remove(file_path)
+        file_list = os.listdir(path)
+        if len(file_list) == 0:
+            print("All files in " + path + " has been remove")
+    else:
+        print("This folder is empty, nothing to clean")
+    

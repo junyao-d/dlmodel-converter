@@ -13,13 +13,29 @@ def keras_to_tflite(file_path):
     has_saved_model = tf.saved_model.contains_saved_model(saved_model_path)
     if has_saved_model:
         print("saved modol exists")
-    print(saved_model_path)
-    converter = tf.lite.TFLiteConverter.from_saved_model(saved_model_path)
-    tflite_model = converter.convert()
-    output_file = output_path + filename_base + '.tflite'
-    with open(output_file, 'wb') as f:
-        f.write(tflite_model)
-    print(output_file)
+        print(saved_model_path)
+        converter = tf.lite.TFLiteConverter.from_saved_model(saved_model_path)
+        tflite_model = converter.convert()
+        output_file = output_path + filename_base + '.tflite'
+        with open(output_file, 'wb') as f:
+            f.write(tflite_model)
+        print(output_file)
+    else:
+        print("saved model does not exist")
 
-# Test    
-keras_to_tflite('./unconverted_models/CNN_Keras.h5')
+def tensorflow_to_tflite(file_path):
+    filename = os.path.basename(file_path)
+    saved_model_path = os.path.join(saved_models, filename+'_saved_model')
+    os.rename(file_path, saved_model_path)
+    has_saved_model = tf.saved_model.contains_saved_model(saved_model_path)
+    if has_saved_model:
+        print("saved modol exists")
+        converter = tf.lite.TFLiteConverter.from_saved_model(saved_model_path)
+        tflite_model = converter.convert()
+        output_file = output_path + filename + '.tflite'
+        with open(output_file, 'wb') as f:
+            f.write(tflite_model)
+        print(output_file)
+    else:
+        print("saved model does not exist")
+
