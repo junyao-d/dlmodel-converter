@@ -14,8 +14,10 @@ def conversion(unconverted_model_location):
         if model_type == 'keras':
             cv.keras_to_tflite(file_path)
             print("Keras model has been convereted to tflite")
-        if model_type == 'tensorflow':
+        elif model_type == 'tensorflow':
             cv.tensorflow_to_tflite(file_path)
             print("Tensorflow Model has been convereted to tflite")
+        elif model_type == 'pytorch':
+            cv.pytorch_to_tflite(file_path)
         else:
             print("Model type can not be recognized")

@@ -1,3 +1,2 @@
-pip install -r requirement_modules.txt
+pip install -r requirements.txt
 
-unzip ./uploaded_files/CNN_Keras.zip -d ./unconverted_models/

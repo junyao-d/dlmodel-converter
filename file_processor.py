@@ -20,7 +20,7 @@ def model_type_detection(file_path):
     if os.path.isfile(file_path):
         if file_path.endswith('.h5'):
             model_type = 'keras'
-        elif file_path.endswith('.onnx'):
+        elif file_path.endswith('.onnx') or file_path.endswith('.pkl'):
             model_type = 'pytorch'
     else:
         saved_model = Path(file_path+'/saved_model.pb')
