@@ -19,7 +19,7 @@ def keras_to_tflite(file_path):
     if has_saved_model:
         print("saved modol exists")
         print(saved_model_path)
-        converter = tf.lite.TFLiteConverter.from_saved_model(saved_model_path, save_format='tf')
+        converter = tf.lite.TFLiteConverter.from_saved_model(saved_model_path)
         tflite_model = converter.convert()
         output_file = os.path.join(OUTPUT_FOLDER, filename_base + '.tflite')
         with open(output_file, 'wb') as f:
