@@ -3,10 +3,12 @@ import os
 import onnx
 import onnx_tf
 import torch
+import numpy as np
 
 pwd = os.path.dirname(__file__)
 OUTPUT_FOLDER = os.path.join(pwd,'tflite_models')
 SAVEDMODEL_FOLDER = os.path.join(pwd,'saved_models')
+
 
 
 def keras_to_tflite(file_path):
@@ -20,6 +22,12 @@ def keras_to_tflite(file_path):
         print("saved modol exists")
         print(saved_model_path)
         converter = tf.lite.TFLiteConverter.from_saved_model(saved_model_path)
+        ##############################################################################
+        # Dynamic range quantization 
+        converter.optimizations = [tf.lite.Optimize.DEFAULT]
+        # Float16 quantization 
+        converter.target_spec.supported_types = [tf.float16]
+        ##############################################################################
         tflite_model = converter.convert()
         output_file = os.path.join(OUTPUT_FOLDER, filename_base + '.tflite')
         with open(output_file, 'wb') as f:

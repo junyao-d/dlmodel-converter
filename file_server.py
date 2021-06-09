@@ -15,7 +15,7 @@ UPLOAD_FOLDER = os.path.join(pwd,'uploaded_files')
 PROCESS_FOLDER = os.path.join(pwd,'unconverted_models')
 OUTPUT_FOLDER = os.path.join(pwd,'tflite_models')
 SAVEDMODEL_FOLDER = os.path.join(pwd,'saved_models')
-ALLOWED_EXTENSIONS = {'zip', 'tar'}
+ALLOWED_EXTENSIONS = {'zip', 'h5','onnx'}
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 
