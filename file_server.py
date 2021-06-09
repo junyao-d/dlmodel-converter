@@ -61,8 +61,11 @@ def upload_and_convert_file():
         filename = secure_filename(file.filename)
         file_init_loc = os.path.join(UPLOAD_FOLDER, filename)
         file.save(file_init_loc)
-        with zipfile.ZipFile(file_init_loc, 'r') as zip_ref:
-            zip_ref.extractall(PROCESS_FOLDER)
+        if filename.endswith('zip'):
+            with zipfile.ZipFile(file_init_loc, 'r') as zip_ref:
+                zip_ref.extractall(PROCESS_FOLDER)
+        else:
+            os.rename(file_init_loc, os.path.join(PROCESS_FOLDER, filename))
         #os.system('python main.py')
         main.conversion(PROCESS_FOLDER)
 
