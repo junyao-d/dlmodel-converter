@@ -24,10 +24,6 @@ PORT = 80
 
 @app.route('/')
 def index():
-    fp.clean_folder(UPLOAD_FOLDER)
-    fp.clean_folder(PROCESS_FOLDER)
-    fp.clean_folder(OUTPUT_FOLDER)
-    fp.clean_folder(SAVEDMODEL_FOLDER)
     return render_template('index.html')
 
 def allowed_file(filename):
@@ -45,7 +41,7 @@ def upload_and_convert_file():
     upload to uploaded_files directory
     requests example:
     with open('path','rb') as file_obj:
-        rsp = requests.post('http://localhost:5000/upload,files={'file':file_obj})
+        rsp = requests.post('http://localhost:5000/upload',files={'file':file_obj})
         print(rsp.text) --> file uploaded successfully
     """
     fp.clean_folder(UPLOAD_FOLDER)
@@ -72,8 +68,8 @@ def upload_and_convert_file():
         filename_base = os.path.splitext(file.filename)[0]
         output_filename = filename_base+'.tflite'
         file_path = os.path.join(OUTPUT_FOLDER,output_filename)
-        # return f"http://{HOST}:{PORT}/download?fileId={output_filename}"#'file uploaded successfully'
-        return send_file(file_path,as_attachment=True)
+        return f"http://{HOST}:{PORT}/download?fileId={output_filename}"#'file uploaded successfully'
+        #return send_file(file_path,as_attachment=True)
     return "file uploaded fail, only zip files are accepted"
 
 
@@ -82,6 +78,7 @@ def download_file():
     file_name = request.args.get('fileId')
     file_path = os.path.join(OUTPUT_FOLDER,file_name)
     if os.path.isfile(file_path):
+        #return send_file(file_path,as_attachment=True)
         return send_file(file_path,as_attachment=True)
     else:
         return "The downloaded file does not exist"
@@ -89,3 +86,10 @@ def download_file():
 if __name__ == "__main__":
     app.run(host=HOST, port=PORT)
     #app.run(debug=True)
+
+@app.route("/clear")
+def clean_folder():
+    fp.clean_folder(UPLOAD_FOLDER)
+    fp.clean_folder(PROCESS_FOLDER)
+    fp.clean_folder(OUTPUT_FOLDER)
+    fp.clean_folder(SAVEDMODEL_FOLDER)
