@@ -37,14 +37,7 @@ def allowed_file(filename):
 
 @app.route('/convert', methods=['GET', 'POST'])
 def upload_and_convert_file():
-    """
-    upload to uploaded_files directory
-    requests example:
-    with open('path','rb') as file_obj:
-        file_dict = {'file':file_obj}
-        rsp = requests.post('http://public_ip:80/convert',files=file_dict)
-        print(rsp.text) --> file uploaded successfully
-    """
+
     fp.clean_folder(UPLOAD_FOLDER)
     fp.clean_folder(PROCESS_FOLDER)
     fp.clean_folder(OUTPUT_FOLDER)
