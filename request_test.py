@@ -20,7 +20,7 @@ with open(source_file_path,'rb') as file_obj:
 # remove the temporary source model file
 os.remove(source_file_path)
 
-# Download converted model file from api and name any you want, example just simply extra the filename from url
+# Download converted model file from api and name any you want, example just simply extract the filename from url
 download_filename = download_url.split("=")[1]
 download_request = requests.get(f"{download_url}", allow_redirects=True)
 open(download_filename, 'wb').write(download_request.content)
