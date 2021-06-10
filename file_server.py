@@ -41,7 +41,8 @@ def upload_and_convert_file():
     upload to uploaded_files directory
     requests example:
     with open('path','rb') as file_obj:
-        rsp = requests.post('http://localhost:5000/upload',files={'file':file_obj})
+        file_dict = {'file':file_obj}
+        rsp = requests.post('http://public_ip:80/convert',files=file_dict)
         print(rsp.text) --> file uploaded successfully
     """
     fp.clean_folder(UPLOAD_FOLDER)
@@ -68,7 +69,9 @@ def upload_and_convert_file():
         filename_base = os.path.splitext(file.filename)[0]
         output_filename = filename_base+'.tflite'
         file_path = os.path.join(OUTPUT_FOLDER,output_filename)
-        return f"http://{HOST}:{PORT}/download?fileId={output_filename}"#'file uploaded successfully'
+        
+        # hostname has to be change to the spi public ip / dns
+        return f"http://[api_public_ip_or_dns]:{PORT}/download?fileId={output_filename}"#'file uploaded successfully'
         #return send_file(file_path,as_attachment=True)
     return "file uploaded fail, only zip files are accepted"
 
