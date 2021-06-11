@@ -1,7 +1,0 @@
-flask
-Werkzeug
-requests
-pathlib
-onnx
-torch
-onnx_tf

@@ -20,7 +20,7 @@ def model_type_detection(file_path):
     if os.path.isfile(file_path):
         if file_path.endswith('h5'):
             model_type = 'keras'
-        elif file_path.endswith('onnx') or file_path.endswith('pkl'):
+        elif file_path.endswith('onnx'):
             model_type = 'pytorch'
     else:
         saved_model = Path(file_path+'/saved_model.pb')
@@ -28,7 +28,7 @@ def model_type_detection(file_path):
         if saved_model.exists() and variables.exists():
             model_type = 'tensorflow'
 
-    print('This is a ' + model_type + ' model')
+    print('This is a/an ' + model_type + ' model')
     return model_type
 
 
@@ -47,3 +47,4 @@ def clean_folder(path):
     else:
         print("Folder" + path + " is empty, nothing to clean")
     
+   

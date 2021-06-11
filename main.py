@@ -5,8 +5,6 @@ import file_processor as fp
 import tflite_converter as cv
 
 
-#unconverted_model_location = './unconverted_models/'
-
 def conversion(unconverted_model_location):
     file_paths = fp.get_unconverted_models(unconverted_model_location)
     for file_path in file_paths:
