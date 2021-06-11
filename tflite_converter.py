@@ -6,8 +6,9 @@ import torch
 import numpy as np
 
 pwd = os.path.dirname(__file__)
-OUTPUT_FOLDER = os.path.join(pwd,'tflite_models')
-SAVEDMODEL_FOLDER = os.path.join(pwd,'saved_models')
+staging_folder = os.path.join(pwd, 'model_file_staging')
+OUTPUT_FOLDER = os.path.join(staging_folder,'output_models')
+SAVEDMODEL_FOLDER = os.path.join(staging_folder,'saved_models')
 
 
 
