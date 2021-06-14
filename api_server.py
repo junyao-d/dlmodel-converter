@@ -18,7 +18,7 @@ OUTPUT_FOLDER = os.path.join(staging_folder, 'output_models')
 SAVEDMODEL_FOLDER = os.path.join(staging_folder, 'saved_models')
 ALLOWED_EXTENSIONS = {'zip', 'h5', 'onnx'}
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-
+SAMPLE_FOLDER = os.path.join(pwd, 'samples')
 
 HOST = "0.0.0.0"
 PORT = 80
@@ -45,29 +45,43 @@ def upload_and_convert_file():
     fp.clean_folder(OUTPUT_FOLDER)
     fp.clean_folder(SAVEDMODEL_FOLDER)
     file_url = request.args.get('url')
-    source_file_request = requests.get(file_url, allow_redirects=True)
-    filename = file_url.split("/")[-1]
+    sample_file = request.args.get('filename')
+    if file_url is not None:
+        source_file_request = requests.get(file_url, allow_redirects=True)
+        filename = file_url.split("/")[-1]
+        if allowed_file(filename):
+            file_init_loc = os.path.join(UPLOAD_FOLDER, filename)
+            open(file_init_loc, 'wb').write(source_file_request.content)
 
-    if allowed_file(filename):
-        file_init_loc = os.path.join(UPLOAD_FOLDER, filename)
-        open(file_init_loc, 'wb').write(source_file_request.content)
-
-        if filename.endswith('zip'):
-            with zipfile.ZipFile(file_init_loc, 'r') as zip_ref:
-                zip_ref.extractall(PROCESS_FOLDER)
-        else:
+            if filename.endswith('zip'):
+                with zipfile.ZipFile(file_init_loc, 'r') as zip_ref:
+                    zip_ref.extractall(PROCESS_FOLDER)
+            else:
+                os.rename(file_init_loc, os.path.join(PROCESS_FOLDER, filename))
+            #os.system('python main.py')
+            main.conversion(PROCESS_FOLDER)
+            filename_base = os.path.splitext(filename)[0]
+            output_filename = filename_base+'.tflite'
+            file_path = os.path.join(OUTPUT_FOLDER, output_filename)
+            # hostname has to be change to the spi public ip / dns
+            # 'file uploaded successfully'
+            #return f"http://[api_public_ip_or_dns]:{PORT}/download?fileId={output_filename}"
+            return send_file(file_path,as_attachment=True)
+        return "file uploaded fail, please check file extension or zip file structure"
+    elif sample_file is not None:
+        filename = sample_file
+        file_init_loc = os.path.join(SAMPLE_FOLDER, filename)
+        if os.path.exists(file_init_loc):
             os.rename(file_init_loc, os.path.join(PROCESS_FOLDER, filename))
-        #os.system('python main.py')
-        main.conversion(PROCESS_FOLDER)
-        filename_base = os.path.splitext(filename)[0]
-        output_filename = filename_base+'.tflite'
-        file_path = os.path.join(OUTPUT_FOLDER, output_filename)
-
-        # hostname has to be change to the spi public ip / dns
-        # 'file uploaded successfully'
-        #return f"http://[api_public_ip_or_dns]:{PORT}/download?fileId={output_filename}"
-        return send_file(file_path,as_attachment=True)
-    return "file uploaded fail, only zip files are accepted"
+            main.conversion(PROCESS_FOLDER)
+            filename_base = os.path.splitext(filename)[0]
+            output_filename = filename_base+'.tflite'
+            file_path = os.path.join(OUTPUT_FOLDER, output_filename)
+            return send_file(file_path,as_attachment=True)
+        else:
+            return "Sample file does not exist"
+    else:
+        return "url does not exist or fail to request file"
 
 ###############################
 # Following is for ui demo only 
