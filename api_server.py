@@ -1,4 +1,4 @@
-import os
+import os, shutil
 from flask import Flask, request, send_file, render_template
 from werkzeug.utils import secure_filename
 import zipfile
@@ -72,7 +72,7 @@ def upload_and_convert_file():
         filename = sample_file
         file_init_loc = os.path.join(SAMPLE_FOLDER, filename)
         if os.path.exists(file_init_loc):
-            os.rename(file_init_loc, os.path.join(PROCESS_FOLDER, filename))
+            shutil.copyfile(file_init_loc, os.path.join(PROCESS_FOLDER, filename))
             main.conversion(PROCESS_FOLDER)
             filename_base = os.path.splitext(filename)[0]
             output_filename = filename_base+'.tflite'
